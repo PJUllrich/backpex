@@ -49,7 +49,7 @@ defmodule Backpex.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:number, "~> 1.0"},
-      {:money, "~> 1.13"},
+      {:money, "~> 1.13", optional: true},
 
       # phoenix
       {:phoenix, "~> 1.7.6"},
