@@ -34,7 +34,7 @@ defmodule Backpex.Ecto.AmountTypeTest do
       assert Type.cast(nil, currency: :EUR, opts: [separator: ".", delimiter: ","]) ==
                {:ok, %Money{amount: 0, currency: :EUR}}
 
-      assert Type.cast(nil, []) == {:ok, %Money{amount: 0, currency: :USD}}
+               assert Type.cast(nil, []) == {:ok, %Money{amount: 0, currency: :USD}}
     end
 
     test "cast dirty" do

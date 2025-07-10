@@ -111,5 +111,5 @@ defmodule Backpex.Fields.Currency do
 
   defp maybe_cast_form(val) when is_binary(val), do: val
   defp maybe_cast_form(nil), do: Decimal.new("0.00")
-  defp maybe_cast_form(%Money{} = value), do: Money.to_decimal(value)
+  defp maybe_cast_form(value), do: Money.to_decimal(value)
 end

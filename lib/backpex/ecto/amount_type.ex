@@ -43,7 +43,7 @@ defmodule Backpex.Ecto.Amount.Type do
     {:ok, Money.new(0, currency)}
   end
 
-  def cast(%Money{} = money, _opts), do: {:ok, money}
+  def cast(%{amount: _amount} = money, _opts), do: {:ok, money}
 
   def cast(_val, _opts), do: :error
 
@@ -56,6 +56,6 @@ defmodule Backpex.Ecto.Amount.Type do
   def load(_val, _loader, _opts), do: :error
 
   def dump(int, _dumper, _opts) when is_integer(int), do: {:ok, int}
-  def dump(%Money{} = m, _dumper, _opts), do: {:ok, m.amount}
+  def dump(%{amount: _amount} = m, _dumper, _opts), do: {:ok, m.amount}
   def dump(_val, _dumper, _opts), do: {:ok, nil}
 end
