@@ -1,7 +1,8 @@
 defmodule Plugs.ThemeSelectorPlugTest do
   use ExUnit.Case, async: true
-  import Plug.Test
+
   import Plug.Conn
+  import Plug.Test
 
   alias Backpex.ThemeSelectorPlug
 

@@ -21,7 +21,7 @@ defmodule DemoWeb.InvoiceLive do
   @impl Backpex.LiveResource
   def item_actions(default_actions) do
     default_actions
-    |> Keyword.drop([:delete])
+    |> Keyword.delete(:delete)
   end
 
   @impl Backpex.LiveResource
@@ -33,8 +33,7 @@ defmodule DemoWeb.InvoiceLive do
       },
       amount: %{
         module: Backpex.Fields.Currency,
-        label: "Amount",
-        align: :right
+        label: "Amount"
       }
     ]
   end

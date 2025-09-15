@@ -27,8 +27,12 @@ defmodule Backpex.Ecto.Amount.Type do
 
   def cast(str, opts) when is_binary(str) do
     currency = Keyword.get(opts, :currency, :USD)
+    opts = Keyword.put(opts, :default_currency, currency)
 
-    Money.parse(str, currency, opts)
+    case Money.parse(str, opts) do
+      {:error, {_money_error, message}} -> {:error, message}
+      money -> {:ok, money}
+    end
   end
 
   def cast(int, opts) when is_integer(int) do

@@ -13,44 +13,46 @@ defmodule Backpex.Ecto.AmountTypeTest do
     end
 
     test "cast int" do
-      assert Type.cast(10_000, []) == {:ok, %Money{amount: 10_000, currency: :USD}}
+      assert Type.cast(10_000, []) == {:ok, %Money{amount: Decimal.new("10000"), currency: :USD}}
     end
 
     test "cast int with opts" do
       opts = [currency: :EUR, opts: [separator: ".", delimiter: ","]]
-      assert Type.cast(10_000, opts) == {:ok, %Money{amount: 10_000, currency: :EUR}}
+      assert Type.cast(10_000, opts) == {:ok, %Money{amount: Decimal.new("10000"), currency: :EUR}}
     end
 
     test "cast binary" do
-      assert Type.cast("1000000", []) == {:ok, %Money{amount: 100_000_000, currency: :USD}}
+      assert Type.cast("1000000", []) == {:ok, %Money{amount: Decimal.new("1000000"), currency: :USD}}
     end
 
     test "cast binary with opts" do
       opts = [currency: :EUR, opts: [separator: ".", delimiter: ","]]
-      assert Type.cast("1000000", opts) == {:ok, %Money{amount: 100_000_000, currency: :EUR}}
+
+      assert Type.cast("1000000", opts) ==
+               {:ok, Money.new(:EUR, "1000000", currency: :EUR, opts: [separator: ".", delimiter: ","])}
     end
 
     test "cast nil" do
       assert Type.cast(nil, currency: :EUR, opts: [separator: ".", delimiter: ","]) ==
-               {:ok, %Money{amount: 0, currency: :EUR}}
+               {:ok, %Money{amount: Decimal.new("0"), currency: :EUR}}
 
-               assert Type.cast(nil, []) == {:ok, %Money{amount: 0, currency: :USD}}
+      assert Type.cast(nil, []) == {:ok, %Money{amount: Decimal.new("0"), currency: :USD}}
     end
 
     test "cast dirty" do
-      assert Type.cast("dirty", []) == :error
-      assert Type.cast("$", []) == :error
-      assert Type.cast("ABC1000DEF", []) == {:ok, %Money{amount: 100_000, currency: :USD}}
-      assert Type.cast("10,20.30,40.50", []) == {:ok, %Money{amount: 102_030, currency: :USD}}
+      assert Type.cast("dirty", []) == {:error, "The currency \"dirty\" is unknown or not supported"}
+      assert Type.cast("$", []) == {:error, "Unable to create money from :USD and \"\""}
+      assert Type.cast("ABC1000DEF", []) == {:error, "Could not parse \"ABC1000DEF\"."}
+      assert Type.cast("10,20.30,40.50", []) == {:error, "Unable to create money from :USD and \"10,20.30,40.50\""}
     end
 
     test "load int" do
-      assert Type.load(100_000_000, nil, []) == {:ok, %Money{amount: 100_000_000, currency: :USD}}
+      assert Type.load(100_000_000, nil, []) == {:ok, %Money{amount: Decimal.new("100000000"), currency: :USD}}
     end
 
     test "load int with opts" do
       opts = [currency: :EUR, opts: [separator: ".", delimiter: ","]]
-      assert Type.load(100_000_000, nil, opts) == {:ok, %Money{amount: 100_000_000, currency: :EUR}}
+      assert Type.load(100_000_000, nil, opts) == {:ok, %Money{amount: Decimal.new("100000000"), currency: :EUR}}
     end
 
     test "load binary" do
@@ -62,7 +64,7 @@ defmodule Backpex.Ecto.AmountTypeTest do
     end
 
     test "dump money" do
-      assert Type.dump(%Money{amount: 1000}, nil, []) == {:ok, 1000}
+      assert Type.dump(%Money{amount: 1000, currency: USD}, nil, []) == {:ok, 1000}
     end
 
     test "dump int" do
